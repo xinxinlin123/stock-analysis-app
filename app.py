@@ -298,7 +298,7 @@ if st.session_state.selected_stocks:
         # 添加重新分析的按钮
         st.divider()
         if st.button("🔄 Analyze Again"):
-            st.experimental_rerun()
+            st.rerun()
             
 else:
     # Welcome screen

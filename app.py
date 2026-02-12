@@ -80,8 +80,8 @@ with st.sidebar:
         else:
             st.session_state.watchlist = []
         st.session_state.selected_stocks = []
-        # 使用 st.experimental_rerun() 替代 st.rerun()
-        st.experimental_rerun()
+       
+        st.rerun()
     
     st.divider()
     
@@ -94,32 +94,36 @@ with st.sidebar:
     if st.button("Add to Watchlist", type="primary"):
         if new_stocks:
             stocks = [s.strip().upper() for s in new_stocks.split(",") if s.strip()]
+            added_count = 0
             for stock in stocks:
                 if stock not in st.session_state.watchlist:
                     st.session_state.watchlist.append(stock)
+                    added_count += 1
             
-            user_file = f"watchlist_{st.session_state.username}.json"
-            with open(user_file, 'w') as f:
-                json.dump(st.session_state.watchlist, f, indent=2)
-            
-            st.success(f"Added! Watchlist saved for {st.session_state.username}")
-            # 添加一个小的延迟让用户看到成功消息
-            time.sleep(0.5)
-            st.experimental_rerun()
+            if added_count > 0:
+                user_file = f"watchlist_{st.session_state.username}.json"
+                with open(user_file, 'w') as f:
+                    json.dump(st.session_state.watchlist, f, indent=2)
+                
+                st.success(f"✅ Successfully added {added_count} stock(s)! Total: {len(st.session_state.watchlist)} stocks")
+                time.sleep(0.5)
+                st.rerun()
+            else:
+                st.info("These stocks are already in your watchlist")
     
     st.divider()
     
     st.subheader("📋 Your Watchlist")
     if st.session_state.watchlist:
+        # 修复：移除default参数，显示全部股票
         selected = st.multiselect(
             "Select stocks to analyze",
-            st.session_state.watchlist,
-            default=st.session_state.watchlist[:min(3, len(st.session_state.watchlist))]
+            st.session_state.watchlist
         )
         st.session_state.selected_stocks = selected
         
         if st.button("🚀 Start Analysis", type="primary"):
-            st.experimental_rerun()
+            st.rerun()
         
         if st.button("Clear Watchlist"):
             st.session_state.watchlist = []
@@ -128,7 +132,7 @@ with st.sidebar:
                 os.remove(user_file)
             st.success("Watchlist cleared!")
             time.sleep(0.5)
-            st.experimental_rerun()
+            st.rerun()
     else:
         st.info("Your watchlist is empty. Add stocks above.")
     
@@ -345,7 +349,7 @@ else:
     st.divider()
     if st.button("🚀 Quick Start with Default Stocks"):
         st.session_state.selected_stocks = ["AAPL", "MSFT", "GOOGL"][:min(3, len(st.session_state.watchlist))]
-        st.experimental_rerun()
+        st.rerun()
 
 # Footer
 st.divider()

@@ -1,6 +1,8 @@
 # 📈 Stock 52-Week Drawdown Analysis
 
-基于52周跌幅的股票分析工具，帮助识别买入机会。当股票价格从52周高点下跌达到特定阈值时，系统会给出相应的买入信号。
+[![Streamlit App](https://stock-analysis-app-52weekspricelimit.streamlit.app/)
+
+A stock analysis tool based on 52-week drawdown to identify buying opportunities. When a stock price falls from its 52-week high to specific thresholds, the system generates corresponding buy signals.
 
 ![Python](https://img.shields.io/badge/Python-3.8%2B-blue)
 ![Streamlit](https://img.shields.io/badge/Streamlit-1.24.0-red)
@@ -8,47 +10,139 @@
 
 ---
 
-## ✨ 功能特点
+## ✨ Features
 
-| 功能 | 说明 |
-|------|------|
-| 👥 **多用户系统** | 每个用户独立的观察列表，自动保存 |
-| 📊 **6级信号系统** | 从⭐⭐⭐⭐⭐到⭐，精确识别买入时机 |
-| 📈 **实时数据** | 从Yahoo Finance获取最新股票数据 |
-| 📉 **可视化图表** | 6个月价格趋势，52周高点标记 |
-| 💾 **自动保存** | 分析结果自动保存为CSV文件 |
-| 🎯 **智能排序** | 按跌幅、信号级别、股票代码排序 |
-
----
-
-## 📊 投资信号说明
-
-| 跌幅 | 信号 | 星级 | 建议 |
-|------|------|------|------|
-| 30%+ | STRONG BUY | ⭐⭐⭐⭐⭐ | 强烈买入 |
-| 25%+ | AGGRESSIVE BUY | ⭐⭐⭐⭐ | 积极买入 |
-| 20%+ | BUY | ⭐⭐⭐ | 买入 |
-| 15%+ | CONSIDER BUYING | ⭐⭐ | 考虑买入 |
-| 10%+ | WATCH & BUY | ⭐ | 观察并买入 |
-| 5%+ | CAUTIOUS WATCH | - | 谨慎观察 |
+| Feature | Description |
+|---------|-------------|
+| 👥 **Multi-User System** | Each user has an independent watchlist with auto-save |
+| 📊 **6-Level Signal System** | From ⭐⭐⭐⭐⭐ to ⭐, precisely identify buying opportunities |
+| 📈 **Real-time Data** | Get latest stock data from Yahoo Finance |
+| 📉 **Visual Charts** | 6-month price trends with 52-week high markers |
+| 💾 **Auto Save** | Analysis results automatically saved as CSV files |
+| 🎯 **Smart Sorting** | Sort by drawdown, signal level, or stock ticker |
 
 ---
 
-## 🚀 快速开始
+## 📊 Investment Signal Guide
 
-### 1. 环境要求
-- Python 3.8 或更高版本
-- pip包管理器
+| Drawdown | Signal | Stars | Action |
+|---------|--------|-------|--------|
+| 30%+ | STRONG BUY | ⭐⭐⭐⭐⭐ | Strong Buy |
+| 25%+ | AGGRESSIVE BUY | ⭐⭐⭐⭐ | Aggressive Buy |
+| 20%+ | BUY | ⭐⭐⭐ | Buy |
+| 15%+ | CONSIDER BUYING | ⭐⭐ | Consider Buying |
+| 10%+ | WATCH & BUY | ⭐ | Watch & Buy |
+| 5%+ | CAUTIOUS WATCH | - | Cautious Watch |
 
-### 2. 安装步骤
+---
+
+## 🚀 Quick Start
+
+### 1. Requirements
+- Python 3.8 or higher
+- pip package manager
+
+### 2. Installation
 
 ```bash
-# 克隆项目
-git clone https://github.com/你的用户名/StockApp.git
+# Clone the repository
+git clone https://github.com/yourusername/StockApp.git
 cd StockApp
 
-# 安装依赖
+# Install dependencies
 pip install -r requirements.txt
 
-# 启动应用
+# Launch the application
 streamlit run app.py
+```
+
+---
+
+## 📖 Usage Guide
+
+### **Step 1: Set Up User**
+- Enter username in the left sidebar
+- Click "Switch User" to change accounts
+- Each user's watchlist is saved independently
+
+### **Step 2: Add Stocks**
+- Enter stock symbols (e.g., AAPL, TSLA, MSFT)
+- Supports batch addition, comma-separated
+- Click "Add to Watchlist"
+
+### **Step 3: Analyze Stocks**
+- Select stocks from your watchlist
+- Click "Start Analysis"
+- View analysis results and charts
+
+### **Step 4: Export Data**
+- Click "Download as CSV"
+- Results are automatically saved locally
+
+---
+
+## 📁 Project Structure
+
+```
+StockApp/
+├── app.py                 # Main application file
+├── requirements.txt       # Dependencies list
+├── .gitignore            # Git ignore file
+├── README.md             # Project documentation
+├── run_app.bat           # Windows one-click launch script
+├── watchlist_*.json      # User watchlists (auto-generated)
+└── results_*.csv         # Analysis results (auto-generated)
+```
+
+---
+
+## 📦 Dependencies
+
+```txt
+streamlit==1.24.0        # Web application framework
+yfinance==0.2.28         # Yahoo Finance data
+pandas==2.0.0            # Data analysis
+numpy==1.24.0            # Numerical computing
+matplotlib==3.7.0        # Data visualization
+```
+
+---
+
+## 🔧 Troubleshooting
+
+### Q: The application won't start?
+A: Ensure Python version ≥ 3.8, run `python --version` to check.
+
+### Q: Failed to fetch stock data?
+A: Yahoo Finance occasionally times out, just retry.
+
+### Q: How to clear user data?
+A: Delete `watchlist_*.json` files.
+
+### Q: Charts not displaying?
+A: Reinstall matplotlib: `pip install matplotlib==3.7.0`
+
+---
+
+## 🤝 Contributing
+
+Welcome to submit Issues and Pull Requests!
+
+1. Fork the project
+2. Create your feature branch
+3. Commit your changes
+4. Push to the branch
+5. Open a Pull Request
+
+
+## 📄 License
+
+MIT License © 2024 [Your Name]
+
+
+## 🌟 Support
+
+If this project helps you, please give it a Star ⭐
+
+
+**Last Updated:** February 11, 2026

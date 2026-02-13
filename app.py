@@ -242,56 +242,131 @@ if st.session_state.selected_stocks:
         st.dataframe(df[["Ticker", "Current Price", "52-Week High", "Drawdown", "Signal"]], 
                     use_container_width=True)
         
-        # Show charts
+                # Show charts
         st.subheader("Price Charts")
         
-        # 根据股票数量决定列数
+        # 获取要显示的股票数量（最多4个）
         num_stocks = min(4, len(st.session_state.selected_stocks))
-        cols = st.columns(2) if num_stocks > 1 else [st.container()]
         
-        for i, ticker in enumerate(st.session_state.selected_stocks[:num_stocks]):
-            try:
-                stock = yf.Ticker(ticker)
-                hist = stock.history(period="6mo")
-                
-                if not hist.empty:
-                    with cols[i % 2] if num_stocks > 1 else st:
-                        fig, ax = plt.subplots(figsize=(10, 4))
-                        ax.plot(hist.index, hist["Close"], linewidth=2, color='blue')
+        if num_stocks == 0:
+            st.info("No stocks selected for charts")
+        else:
+            # 根据股票数量创建列
+            if num_stocks == 1:
+                # 只有1个股票，用单列
+                for i, ticker in enumerate(st.session_state.selected_stocks[:num_stocks]):
+                    try:
+                        stock = yf.Ticker(ticker)
+                        hist = stock.history(period="6mo")
                         
-                        # 计算52周高点和当前价格
-                        high_52w = hist["Close"].rolling(252, min_periods=1).max().iloc[-1]
-                        current_price = hist["Close"].iloc[-1]
+                        if not hist.empty:
+                            st.subheader(f"{ticker}")
+                            fig, ax = plt.subplots(figsize=(10, 4))
+                            ax.plot(hist.index, hist["Close"], linewidth=2, color='blue')
+                            
+                            if len(hist) > 20:
+                                high_52w = hist["Close"].rolling(min(252, len(hist)), min_periods=1).max().iloc[-1]
+                                current_price = hist["Close"].iloc[-1]
+                                
+                                ax.axhline(y=high_52w, color='red', linestyle='--', alpha=0.5, label=f'52W High: ${high_52w:.2f}')
+                                ax.axhline(y=current_price, color='green', linestyle='--', alpha=0.5, label=f'Current: ${current_price:.2f}')
+                            
+                            ax.set_title(f"{ticker} - 6 Month Trend")
+                            ax.set_xlabel("Date")
+                            ax.set_ylabel("Price ($)")
+                            ax.grid(True, alpha=0.3)
+                            ax.legend(loc='upper left')
+                            plt.xticks(rotation=45)
+                            plt.tight_layout()
+                            st.pyplot(fig)
+                    except Exception as e:
+                        st.error(f"Could not load chart for {ticker}: {str(e)}")
+            
+            elif num_stocks == 2:
+                # 2个股票，用2列
+                cols = st.columns(2)
+                for i, ticker in enumerate(st.session_state.selected_stocks[:num_stocks]):
+                    try:
+                        stock = yf.Ticker(ticker)
+                        hist = stock.history(period="6mo")
                         
-                        ax.axhline(y=high_52w, color='red', linestyle='--', alpha=0.5, label=f'52W High: ${high_52w:.2f}')
-                        ax.axhline(y=current_price, color='green', linestyle='--', alpha=0.5, label=f'Current: ${current_price:.2f}')
+                        if not hist.empty:
+                            with cols[i]:
+                                fig, ax = plt.subplots(figsize=(10, 4))
+                                ax.plot(hist.index, hist["Close"], linewidth=2, color='blue')
+                                
+                                if len(hist) > 20:
+                                    high_52w = hist["Close"].rolling(min(252, len(hist)), min_periods=1).max().iloc[-1]
+                                    current_price = hist["Close"].iloc[-1]
+                                    
+                                    ax.axhline(y=high_52w, color='red', linestyle='--', alpha=0.5, label=f'52W High: ${high_52w:.2f}')
+                                    ax.axhline(y=current_price, color='green', linestyle='--', alpha=0.5, label=f'Current: ${current_price:.2f}')
+                                
+                                ax.set_title(f"{ticker} - 6 Month Trend")
+                                ax.set_xlabel("Date")
+                                ax.set_ylabel("Price ($)")
+                                ax.grid(True, alpha=0.3)
+                                ax.legend(loc='upper left')
+                                plt.xticks(rotation=45)
+                                plt.tight_layout()
+                                st.pyplot(fig)
+                    except Exception as e:
+                        with cols[i]:
+                            st.error(f"Could not load chart for {ticker}")
+            
+            elif num_stocks >= 3:
+                # 3-4个股票，用2列，每列显示1-2个
+                cols = st.columns(2)
+                for i, ticker in enumerate(st.session_state.selected_stocks[:num_stocks]):
+                    try:
+                        stock = yf.Ticker(ticker)
+                        hist = stock.history(period="6mo")
                         
-                        ax.set_title(f"{ticker} - 6 Month Trend")
-                        ax.set_xlabel("Date")
-                        ax.set_ylabel("Price ($)")
-                        ax.grid(True, alpha=0.3)
-                        ax.legend(loc='upper left')
-                        plt.xticks(rotation=45)
-                        plt.tight_layout()
-                        st.pyplot(fig)
-            except Exception as e:
-                with cols[i % 2] if num_stocks > 1 else st:
-                    st.error(f"Could not load chart for {ticker}")
+                        if not hist.empty:
+                            with cols[i % 2]:
+                                fig, ax = plt.subplots(figsize=(10, 4))
+                                ax.plot(hist.index, hist["Close"], linewidth=2, color='blue')
+                                
+                                if len(hist) > 20:
+                                    high_52w = hist["Close"].rolling(min(252, len(hist)), min_periods=1).max().iloc[-1]
+                                    current_price = hist["Close"].iloc[-1]
+                                    
+                                    ax.axhline(y=high_52w, color='red', linestyle='--', alpha=0.5, label=f'52W High: ${high_52w:.2f}')
+                                    ax.axhline(y=current_price, color='green', linestyle='--', alpha=0.5, label=f'Current: ${current_price:.2f}')
+                                
+                                ax.set_title(f"{ticker} - 6 Month Trend")
+                                ax.set_xlabel("Date")
+                                ax.set_ylabel("Price ($)")
+                                ax.grid(True, alpha=0.3)
+                                ax.legend(loc='upper left')
+                                plt.xticks(rotation=45)
+                                plt.tight_layout()
+                                st.pyplot(fig)
+                    except Exception as e:
+                        with cols[i % 2]:
+                            st.error(f"Could not load chart for {ticker}")
         
-        # Download button
+                # Download button
         st.subheader("💾 Download Results")
         
-        download_df = df[["Ticker", "Current Price", "52-Week High", "Drawdown", "Signal"]].copy()
-        csv = download_df.to_csv(index=False).encode("utf-8")
+        # 创建两个版本的数据：一个用于显示，一个用于下载
+        display_df = df[["Ticker", "Current Price", "52-Week High", "Drawdown", "Signal"]].copy()
+        
+        # 为下载创建干净版本（移除星星符号，只保留文字）
+        download_df = df[["Ticker", "Current Price", "52-Week High", "Drawdown"]].copy()
+        download_df["Signal"] = df["Signal"].str.replace(r'[⭐★]', '', regex=True).str.strip()
+        
+        # CSV下载（用UTF-8 with BOM，Excel能识别）
+        csv = download_df.to_csv(index=False).encode("utf-8-sig")
         
         timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")
         results_file = f"results_{st.session_state.username}_{timestamp}.csv"
-        download_df.to_csv(results_file, index=False)
+        download_df.to_csv(results_file, index=False, encoding='utf-8-sig')
         
         col1, col2 = st.columns(2)
         with col1:
             st.download_button(
-                label="📥 Download as CSV",
+                label="📥 Download CSV (Excel兼容)",
                 data=csv,
                 file_name=f"stock_analysis_{datetime.now().strftime('%Y%m%d')}.csv",
                 mime="text/csv"
@@ -299,10 +374,9 @@ if st.session_state.selected_stocks:
         with col2:
             st.info(f"Results also saved to: `{results_file}`")
             
-        # 添加重新分析的按钮
-        st.divider()
-        if st.button("🔄 Analyze Again"):
-            st.rerun()
+        # 显示带星星的表格
+        st.subheader("Current Analysis")
+        st.dataframe(display_df, use_container_width=True)              
             
 else:
     # Welcome screen
